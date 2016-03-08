@@ -5,10 +5,10 @@ from subprocess import call
 #sys.argv[1] = bam file with duplicates removed
 #sys.argv[2] = bedfile of capture panel`
 #sys.argv[3] = only required if using formatDOC(pathToBam), single column text file of chromosome to keep in analysis
-def makeDOC(pathToBedtools, pathToBAM):
-	depthOfCoverage=open('/mnt/'+str(sys.argv[1][:-4])+'-DOC-file.txt', 'w')
+def makeDOC(pathToBedtools, pathToBAM, pathToBed):
+	depthOfCoverage=open(str(pathToBAM)+str(sys.argv[1][:-4])+'-DOC-file.txt', 'w')
 	os.chdir(pathToBedtools)
-	call(['./coverageBed', '-abam', str(pathToBAM)+str(sys.argv[1]), '-b', str(pathToBAM)+str(sys.argv[2]), '-d'], stdout=depthOfCoverage)
+	call(['./coverageBed', '-abam', str(pathToBAM)+str(sys.argv[1]), '-b', str(pathToBed)+str(sys.argv[2]), '-d'], stdout=depthOfCoverage)
 
 def formatDOC(pathToBAM):
 	os.chdir(pathToBAM)
@@ -30,5 +30,6 @@ def formatDOC(pathToBAM):
 if __name__=='__main__':
 	pathToBedtools='/home/ubuntu/TOOLS/bedtools2/bin/'
 	pathToBAM='/mnt/'
-	#makeDOC(pathToBedtools, pathToBAM);
-	#formatDOC(pathToBAM);
+	pathToBed='/mnt/'
+	makeDOC(pathToBedtools, pathToBAM, pathToBed);
+	formatDOC(pathToBAM);
