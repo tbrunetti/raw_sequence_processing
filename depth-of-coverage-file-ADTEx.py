@@ -3,7 +3,7 @@ import os
 from subprocess import call
 
 #sys.argv[1] = bam file with duplicates removed
-#sys.argv[2] = bedfile of capture panel`
+#sys.argv[2] = bedfile of capture panel
 #sys.argv[3] = only required if using formatDOC(pathToBam), single column text file of chromosome to keep in analysis
 def makeDOC(pathToBedtools, pathToBAM, pathToBed):
 	depthOfCoverage=open(str(pathToBAM)+str(sys.argv[1][:-4])+'-DOC-file.txt', 'w')
