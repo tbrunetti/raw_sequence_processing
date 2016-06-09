@@ -20,7 +20,8 @@ class Pipeline(BasePipeline):
 				'dbSNP': 'Full path to dbSNP vcf',
 				'cosmic': 'Full path to COSMIC vcf',
 				'target_intervals': 'Full path to BED file of target regions',
-				'output_VCF': 'Full path to directory of individual normal variant vcf files, no / at end, CANNOT BE SAME DIRECTORY OF BAM FILE LOCATION!'
+				'output_VCF': 'Full path to output directory of individual normal variant vcf files, no / at end, CANNOT BE SAME DIRECTORY OF BAM FILE LOCATION!'
+
 				}	
 			}
 
