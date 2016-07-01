@@ -47,24 +47,27 @@ class Pipeline(BasePipeline):
 				Parameter('--dbsnp', pipeline_config['GATK']['dbSNP']),
 				Parameter('--cosmic', pipeline_config['GATK']['cosmic']),
 				Parameter('-L', pipeline_config['GATK']['target_intervals']),
-				Parameter('-vcf', str(pipeline_config['GATK']['output_VCF']) + '/' + str(bam[:-4]) + '_mutectv2_call_stats' + '.vcf'),
-				Parameter('--coverage_file', str(bam[:-4]) + '.coverage.wig.txt')
+				Parameter('-o', str(pipeline_config['GATK']['output_VCF']) + '/' + str(bam[:-4]) + '_mutectv2_call_stats' + '.vcf'),
+				#Parameter('--coverage_file', str(bam[:-4]) + '.coverage.wig.txt')
 				)
 
 		#calcuates the total number of BAM files analyzed
 		getListOfFiles=subprocess.Popen(("ls", "-A"), stdout=subprocess.PIPE)
-		numOfFiles=subprocess.check_output(('wc', '-l'), stdin=getListOfFiles)
+		numOfFiles=subprocess.check_output(('wc', '-l'), stdin=getListOfFiles.stdout)
+		getListOfFiles.wait()
+
 		output=numOfFiles.stdout.read()
+		
 		print "The total number of normal samples that will make up PON is " + str(output)
 		
 		#creates a list of parameters that are only called once
 		single_parameter_calls=[Parameter('-T', 'CombineVariants'),
 				Parameter('-R', pipeline_config['GATK']['reference']),
-				Parameter(pipeline_args['minN']),
+				Parameter('-minN', pipeline_args['minN']),
 				Parameter('--filteredAreUncalled'),
 				Parameter('--filteredrecordmergetype', 'KEEP_IF_ANY_UNFILTERED'),
 				Parameter('-L', pipeline_config['GATK']['target_intervals']),
-				Parameter(pipeline_args['o'])]
+				Parameter('-o', pipeline_args['o'])]
 		#add x number of -V parameters, depending on the number of VCF files generated above
 		repetative_parameter_vcf=[Parameter('-V', vcf) for vcf in os.listdir(pipeline_config['GATK']['output_VCF'])]
 		#combineAllVariants.run() combines all VCF files for each BAM file analyzed above to generate
