@@ -35,21 +35,23 @@ class Pipeline(BasePipeline):
 		#the -T parameter is different so only made for code readability
 		mutect = Software('GATK', pipeline_config['GATK']['path'])
 		combineAllVariants=Software('GATK', pipeline_config['GATK']['path'])
+			
+		#changes directory to location of BAM files so within scope
+		os.chdir(pipeline_config['GATK']['inputBAM'])
 		#iterates through all BAMs can runs mutect object with appropriate paramters
 		for bam in os.listdir(pipeline_config['GATK']['inputBAM']):
-			#changes directory to location of BAM files so within scope
-			os.chdir(pipeline_config['GATK']['inputBAM'])
-			mutect.run(
-				Parameter('-T', 'MuTect2'),
-				Parameter('-R', pipeline_config['GATK']['reference']),
-				Parameter('-I:tumor', bam),
-				Parameter('--artifact_detection_mode'),
-				Parameter('--dbsnp', pipeline_config['GATK']['dbSNP']),
-				Parameter('--cosmic', pipeline_config['GATK']['cosmic']),
-				Parameter('-L', pipeline_config['GATK']['target_intervals']),
-				Parameter('-o', str(pipeline_config['GATK']['output_VCF']) + '/' + str(bam[:-4]) + '_mutectv2_call_stats' + '.vcf'),
-				#Parameter('--coverage_file', str(bam[:-4]) + '.coverage.wig.txt')
-				)
+			if bam[-4:]=='.bam':
+				mutect.run(
+					Parameter('-T', 'MuTect2'),
+					Parameter('-R', pipeline_config['GATK']['reference']),
+					Parameter('-I:tumor', bam),
+					Parameter('--artifact_detection_mode'),
+					Parameter('--dbsnp', pipeline_config['GATK']['dbSNP']),
+					Parameter('--cosmic', pipeline_config['GATK']['cosmic']),
+					Parameter('-L', pipeline_config['GATK']['target_intervals']),
+					Parameter('-o', str(pipeline_config['GATK']['output_VCF']) + '/' + str(bam[:-4]) + '_mutectv2_call_stats' + '.vcf'),
+					#Parameter('--coverage_file', str(bam[:-4]) + '.coverage.wig.txt')
+					)
 
 		#calcuates the total number of BAM files analyzed
 		getListOfFiles=subprocess.Popen(("ls", "-A"), stdout=subprocess.PIPE)
