@@ -52,15 +52,6 @@ class Pipeline(BasePipeline):
 					Parameter('-o', str(pipeline_config['GATK']['output_VCF']) + '/' + str(bam[:-4]) + '_mutectv2_call_stats' + '.vcf'),
 					#Parameter('--coverage_file', str(bam[:-4]) + '.coverage.wig.txt')
 					)
-
-		#calcuates the total number of BAM files analyzed
-		getListOfFiles=subprocess.Popen(("ls", "-A"), stdout=subprocess.PIPE)
-		numOfFiles=subprocess.check_output(('wc', '-l'), stdin=getListOfFiles.stdout)
-		getListOfFiles.wait()
-
-		output=numOfFiles.stdout.read()
-		
-		print "The total number of normal samples that will make up PON is " + str(output)
 		
 		#creates a list of parameters that are only called once
 		single_parameter_calls=[Parameter('-T', 'CombineVariants'),
